@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Leanback">
 
-        <activity android:name="com.somexapps.ledcolorpicker.MainActivity">
+        <activity android:name=".LedColorPickerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

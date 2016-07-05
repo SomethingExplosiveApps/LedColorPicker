@@ -38,8 +38,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class MainActivity extends Activity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+public class LedColorPickerActivity extends Activity {
+    private static final String TAG = LedColorPickerActivity.class.getSimpleName();
 
     @BindView(R.id.activity_main_red_color_text) EditText redColorEditText;
     @BindView(R.id.activity_main_blue_color_text) EditText blueColorEditText;
