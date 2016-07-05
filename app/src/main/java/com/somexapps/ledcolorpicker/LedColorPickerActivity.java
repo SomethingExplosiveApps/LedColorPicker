@@ -41,16 +41,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LedColorPickerActivity extends Activity {
     private static final String TAG = LedColorPickerActivity.class.getSimpleName();
 
+    // View bindings
     @BindView(R.id.activity_main_red_color_text) EditText redColorEditText;
     @BindView(R.id.activity_main_blue_color_text) EditText blueColorEditText;
     @BindView(R.id.activity_main_green_color_text) EditText greenColorEditText;
-    @BindView(R.id.activity_main_color_update_button)
-    Button colorUpdateButton;
+    @BindView(R.id.activity_main_color_update_button) Button colorUpdateButton;
 
     // API object for making calls to solid color API
     private SolidColorApiService apiService;
 
-    // Holders for the color ints
+    // Fields to hold the color values that were last set
     private int redColor = 0;
     private int blueColor = 0;
     private int greenColor = 0;
@@ -79,10 +79,10 @@ public class LedColorPickerActivity extends Activity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                    Log.d(TAG, "screen on");
+                    // Update LEDs to currently stored color
                     updateColor();
                 } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                    Log.d(TAG, "screen off");
+                    // Set LEDs to black
                     clearColor();
                 }
             }
