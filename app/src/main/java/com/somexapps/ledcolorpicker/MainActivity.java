@@ -1,4 +1,4 @@
-package com.somexapps.tvcolorpicker;
+package com.somexapps.ledcolorpicker;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -11,11 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.somexapps.tvcolorpicker.api.SolidColorApiService;
-import com.somexapps.tvcolorpicker.utils.Constants;
+import com.somexapps.ledcolorpicker.api.SolidColorApiService;
+import com.somexapps.ledcolorpicker.utils.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

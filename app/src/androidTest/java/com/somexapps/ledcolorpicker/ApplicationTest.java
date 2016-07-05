@@ -1,4 +1,4 @@
-package com.somexapps.tvcolorpicker;
+package com.somexapps.ledcolorpicker;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

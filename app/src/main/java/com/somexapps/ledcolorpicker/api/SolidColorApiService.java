@@ -1,4 +1,4 @@
-package com.somexapps.tvcolorpicker.api;
+package com.somexapps.ledcolorpicker.api;
 
 import com.google.gson.JsonObject;
 

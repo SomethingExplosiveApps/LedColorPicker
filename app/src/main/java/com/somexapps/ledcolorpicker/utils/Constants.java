@@ -1,4 +1,4 @@
-package com.somexapps.tvcolorpicker.utils;
+package com.somexapps.ledcolorpicker.utils;
 
 /**
  * Created by something15525 on 7/3/2016.

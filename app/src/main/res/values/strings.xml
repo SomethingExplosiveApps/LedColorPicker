@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TvColorPicker</string>
+    <string name="app_name">LedColorPicker</string>
 
     <string name="activity_main_red_color_text_hint">Red</string>
     <string name="activity_main_green_color_text_hint">Green</string>
