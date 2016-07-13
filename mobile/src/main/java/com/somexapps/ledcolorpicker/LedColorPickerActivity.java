@@ -12,6 +12,7 @@ import com.pavelsikun.vintagechroma.ChromaDialog;
 import com.pavelsikun.vintagechroma.ChromaUtil;
 import com.pavelsikun.vintagechroma.IndicatorMode;
 import com.pavelsikun.vintagechroma.colormode.ColorMode;
+import com.somexapps.ledcolorpicker.utils.ColorParser;
 import com.somexapps.ledcolorpicker.utils.Constants;
 
 public class LedColorPickerActivity extends AppCompatActivity {
@@ -70,11 +71,14 @@ public class LedColorPickerActivity extends AppCompatActivity {
         // Update color
         currentColor = newColor;
 
+        // Get human readable hex string from integer.
+        String hexString = ChromaUtil.getFormattedColorString(currentColor, false);
+
         // Update text view with new color
         currentColorTextView.setText(
                 getString(
                         R.string.activity_led_color_picker_current_color_header,
-                        ChromaUtil.getFormattedColorString(currentColor, false)
+                        hexString
                 )
         );
 
@@ -87,9 +91,13 @@ public class LedColorPickerActivity extends AppCompatActivity {
                 .putInt(Constants.PREF_SAVED_COLOR_VALUE, newColor)
                 .apply();
 
+        // Grab individual RGB values to send to server.
+        int[] rgbArray = ColorParser.hexToRgb(hexString);
+
         // Make sure we have a saved color
-        if (currentColor != 0) {
-            // TODO: Update tv with color
+        if (rgbArray != null &&
+                rgbArray.length == 3) {
+            // TODO: Send values to server.
         }
     }
 }
