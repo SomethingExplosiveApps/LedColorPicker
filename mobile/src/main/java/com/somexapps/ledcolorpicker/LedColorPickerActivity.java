@@ -4,18 +4,30 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.pavelsikun.vintagechroma.ChromaDialog;
 import com.pavelsikun.vintagechroma.ChromaUtil;
 import com.pavelsikun.vintagechroma.IndicatorMode;
 import com.pavelsikun.vintagechroma.colormode.ColorMode;
+import com.somexapps.ledcolorpicker.shared.api.SolidColorApiService;
+import com.somexapps.ledcolorpicker.shared.utils.ApiConstants;
 import com.somexapps.ledcolorpicker.utils.ColorParser;
 import com.somexapps.ledcolorpicker.utils.Constants;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class LedColorPickerActivity extends AppCompatActivity {
+    private static final String TAG = LedColorPickerActivity.class.getSimpleName();
+
     // Used to store the current color that is set
     private int currentColor;
 
@@ -31,10 +43,23 @@ public class LedColorPickerActivity extends AppCompatActivity {
     // Used to identify the color picker dialog
     private static final String DIALOG_COLOR_PICKER = "dialog_color_picker";
 
+    // API object for making calls to solid color API
+    private SolidColorApiService apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up main view
         setContentView(R.layout.activity_led_color_picker);
+
+        // Create api service
+        Retrofit retrofit =
+                new Retrofit.Builder()
+                        .baseUrl(ApiConstants.SOLID_COLOR_API_BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+        apiService = retrofit.create(SolidColorApiService.class);
 
         // Grab views and set click listeners
         currentColorTextView =
@@ -97,7 +122,20 @@ public class LedColorPickerActivity extends AppCompatActivity {
         // Make sure we have a saved color
         if (rgbArray != null &&
                 rgbArray.length == 3) {
-            // TODO: Send values to server.
+            // Turn on leds with saved values
+            apiService
+                    .solidColor(rgbArray[0], rgbArray[1], rgbArray[2])
+                    .enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                            // do nothing
+                        }
+
+                        @Override
+                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                            Log.e(TAG, "Error calling solid color api:", t);
+                        }
+                    });
         }
     }
 }

@@ -1,10 +1,4 @@
-package com.somexapps.ledcolorpicker.shared.api;
-
-import com.google.gson.JsonObject;
-
-import retrofit2.Call;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
+package com.somexapps.ledcolorpicker.shared.utils;
 
 /**
  * Created by Michael Limb on 7/3/2016.
@@ -20,12 +14,6 @@ import retrofit2.http.Query;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public interface SolidColorApiService {
-    @POST("/color")
-    Call<JsonObject> color(@Query("enabled") boolean enabled);
-
-    @POST("/solidcolor")
-    Call<JsonObject> solidColor(@Query("red") int redValue,
-                                @Query("green") int greenValue,
-                                @Query("blue") int blueValue);
+public class ApiConstants {
+    public static final String SOLID_COLOR_API_BASE_URL = "http://192.168.1.11:8080";
 }
