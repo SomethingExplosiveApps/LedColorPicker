@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.JsonObject;
-import com.somexapps.ledcolorpicker.api.SolidColorApiService;
+import com.somexapps.ledcolorpicker.shared.api.SolidColorApiService;
 import com.somexapps.ledcolorpicker.utils.Constants;
 
 import butterknife.BindView;
