@@ -1,9 +1,5 @@
 <resources>
     <string name="app_name">LedColorPicker</string>
-
-    <string name="activity_main_red_color_text_hint">Red</string>
-    <string name="activity_main_green_color_text_hint">Green</string>
-    <string name="activity_main_blue_color_text_hint">Blue</string>
-    <string name="activity_main_color_update_button_text">Update</string>
+    <string name="no_further_action_required_text">No further action required. You may close this app.</string>
 
 </resources>
