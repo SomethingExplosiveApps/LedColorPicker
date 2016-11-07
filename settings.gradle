@@ -1,1 +1,1 @@
-include ':tv'
+include ':tv', ':mobile', ':shared'
