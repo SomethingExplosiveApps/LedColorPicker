@@ -2,9 +2,9 @@ package com.somexapps.ledcolorpicker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,25 +26,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LedColorPickerActivity extends AppCompatActivity {
-    private static final String TAG = LedColorPickerActivity.class.getSimpleName();
-
-    // Used to store the current color that is set
     private int currentColor;
-
-    // Shared prefs for holding the saved color value
     private SharedPreferences preferences;
-
-    // Current color text view
     private TextView currentColorTextView;
-
-    // Current color view
     private View currentColorView;
-
-    // Used to identify the color picker dialog
-    private static final String DIALOG_COLOR_PICKER = "dialog_color_picker";
-
-    // API object for making calls to solid color API
-    private SolidColorApiService apiService;
+    private static final String DIALOG_COLOR_PICKER_IDENTIFIER = "dialog_color_picker";
+    private SolidColorApiService colorApiService;
+    private AlertDialog errorUpdatingColorDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +41,18 @@ public class LedColorPickerActivity extends AppCompatActivity {
         // Set up main view
         setContentView(R.layout.activity_led_color_picker);
 
+        errorUpdatingColorDialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.error_sending_color_to_service_text)
+                .setNeutralButton(android.R.string.ok, null)
+                .create();
+
         // Create api service
         Retrofit retrofit =
                 new Retrofit.Builder()
                         .baseUrl(ApiConstants.SOLID_COLOR_API_BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
-        apiService = retrofit.create(SolidColorApiService.class);
+        colorApiService = retrofit.create(SolidColorApiService.class);
 
         // Grab views and set click listeners
         currentColorTextView =
@@ -73,48 +66,28 @@ public class LedColorPickerActivity extends AppCompatActivity {
         currentColorView = findViewById(R.id.activity_led_color_picker_current_color_view);
 
         // Update the current color with saved color, if it exists
-        int savedColor = preferences.getInt(
+        currentColor = preferences.getInt(
                 Constants.PREF_SAVED_COLOR_VALUE,
                 Constants.DEFAULT_SAVED_COLOR_VALUE
         );
 
         // Update color on the tv
-        updateColor(savedColor);
+        sendColorToService(currentColor);
 
         // Set up button click
         updateColorButton.setOnClickListener(view -> new ChromaDialog.Builder()
-                .initialColor(savedColor)
+                .initialColor(currentColor)
                 .colorMode(ColorMode.RGB) // RGB, ARGB, HVS, CMYK, CMYK255, HSL
                 .indicatorMode(IndicatorMode.DECIMAL) //HEX or DECIMAL; Note that (HSV || HSL || CMYK) && IndicatorMode.HEX is a bad idea
                 // Set color text view when selected
-                .onColorSelected(this::updateColor)
+                .onColorSelected(this::sendColorToService)
                 .create()
-                .show(getSupportFragmentManager(), DIALOG_COLOR_PICKER));
+                .show(getSupportFragmentManager(), DIALOG_COLOR_PICKER_IDENTIFIER));
     }
 
-    private void updateColor(int newColor) {
-        // Update color
-        currentColor = newColor;
-
+    private void sendColorToService(int newColor) {
         // Get human readable hex string from integer.
-        String hexString = ChromaUtil.getFormattedColorString(currentColor, false);
-
-        // Update text view with new color
-        currentColorTextView.setText(
-                getString(
-                        R.string.activity_led_color_picker_current_color_header,
-                        hexString
-                )
-        );
-
-        // Update color view
-        currentColorView.setBackgroundColor(newColor);
-
-        // Save color in shared preferences
-        preferences
-                .edit()
-                .putInt(Constants.PREF_SAVED_COLOR_VALUE, newColor)
-                .apply();
+        final String hexString = ChromaUtil.getFormattedColorString(newColor, false);
 
         // Grab individual RGB values to send to server.
         int[] rgbArray = ColorParser.hexToRgb(hexString);
@@ -123,19 +96,46 @@ public class LedColorPickerActivity extends AppCompatActivity {
         if (rgbArray != null &&
                 rgbArray.length == 3) {
             // Turn on leds with saved values
-            apiService
+            colorApiService
                     .solidColor(rgbArray[0], rgbArray[1], rgbArray[2])
                     .enqueue(new Callback<JsonObject>() {
                         @Override
                         public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                             // do nothing
+                            if (response.isSuccessful()) {
+                                updateColorUi(newColor, hexString);
+                            } else {
+                                errorUpdatingColorDialog.show();
+                            }
                         }
 
                         @Override
                         public void onFailure(Call<JsonObject> call, Throwable t) {
-                            Log.e(TAG, "Error calling solid color api:", t);
+                            errorUpdatingColorDialog.show();
                         }
                     });
         }
+    }
+
+    private void updateColorUi(int newColor, String hexString) {
+        // Update color
+        currentColor = newColor;
+
+        // Update text view with new color
+        currentColorTextView.setText(
+                getString(
+                        R.string.current_color_header,
+                        hexString
+                )
+        );
+
+        // Update color view
+        currentColorView.setBackgroundColor(currentColor);
+
+        // Save color in shared preferences
+        preferences
+                .edit()
+                .putInt(Constants.PREF_SAVED_COLOR_VALUE, currentColor)
+                .apply();
     }
 }

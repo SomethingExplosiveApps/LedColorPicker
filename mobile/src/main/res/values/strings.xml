@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">LedColorPicker</string>
-    <string name="activity_led_color_picker_current_color_header">Current color (HEX): %1$s</string>
-    <string name="activity_led_color_picker_new_color_button_text">Pick new color</string>
+    <string name="current_color_header">Current color (HEX): %1$s</string>
+    <string name="pick_new_color_button_text">Pick new color</string>
+    <string name="error_sending_color_to_service_text">Error updating color, please retry.</string>
 </resources>
