@@ -15,5 +15,5 @@ package com.somexapps.ledcolorpicker.shared.utils;
  * limitations under the License.
  */
 public class ApiConstants {
-    public static final String SOLID_COLOR_API_BASE_URL = "http://192.168.1.11:8080";
+    public static final String SOLID_COLOR_API_BASE_URL = "http://192.168.86.11:8080";
 }
