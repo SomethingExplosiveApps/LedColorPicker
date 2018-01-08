@@ -2,9 +2,11 @@ package com.somexapps.ledcolorpicker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,6 +36,11 @@ public class LedColorPickerActivity extends AppCompatActivity {
     private SolidColorApiService colorApiService;
     private AlertDialog errorUpdatingColorDialog;
 
+    private TextInputEditText redColorEditText;
+    private TextInputEditText greenColorEditText;
+    private TextInputEditText blueColorEditText;
+    private Button updateButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +64,13 @@ public class LedColorPickerActivity extends AppCompatActivity {
         // Grab views and set click listeners
         currentColorTextView =
                 (TextView) findViewById(R.id.activity_led_color_picker_current_color_text);
-        Button updateColorButton =
+        Button pickNewColorButton =
                 (Button) findViewById(R.id.activity_led_color_picker_new_color_button);
+
+        redColorEditText = (TextInputEditText) findViewById(R.id.red_color_value_et);
+        greenColorEditText = (TextInputEditText) findViewById(R.id.green_color_value_et);
+        blueColorEditText = (TextInputEditText) findViewById(R.id.blue_color_value_et);
+        updateButton = (Button) findViewById(R.id.update_button_bt);
 
         preferences = getPreferences(Context.MODE_PRIVATE);
 
@@ -74,8 +86,17 @@ public class LedColorPickerActivity extends AppCompatActivity {
         // Update color on the tv
         sendColorToService(currentColor);
 
+        updateButton.setOnClickListener(view -> {
+            String hexFromRgb = ColorParser.rgbToHex(
+                    Integer.valueOf(redColorEditText.getText().toString()),
+                    Integer.valueOf(greenColorEditText.getText().toString()),
+                    Integer.valueOf(blueColorEditText.getText().toString())
+            );
+            sendColorToService(Color.parseColor(hexFromRgb));
+        });
+
         // Set up button click
-        updateColorButton.setOnClickListener(view -> new ChromaDialog.Builder()
+        pickNewColorButton.setOnClickListener(view -> new ChromaDialog.Builder()
                 .initialColor(currentColor)
                 .colorMode(ColorMode.RGB) // RGB, ARGB, HVS, CMYK, CMYK255, HSL
                 .indicatorMode(IndicatorMode.DECIMAL) //HEX or DECIMAL; Note that (HSV || HSL || CMYK) && IndicatorMode.HEX is a bad idea
@@ -103,7 +124,7 @@ public class LedColorPickerActivity extends AppCompatActivity {
                         public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                             // do nothing
                             if (response.isSuccessful()) {
-                                updateColorUi(newColor, hexString);
+                                updateColorUi(newColor, hexString, rgbArray);
                             } else {
                                 errorUpdatingColorDialog.show();
                             }
@@ -117,7 +138,7 @@ public class LedColorPickerActivity extends AppCompatActivity {
         }
     }
 
-    private void updateColorUi(int newColor, String hexString) {
+    private void updateColorUi(int newColor, String hexString, int[] rgbArray) {
         // Update color
         currentColor = newColor;
 
@@ -128,6 +149,10 @@ public class LedColorPickerActivity extends AppCompatActivity {
                         hexString
                 )
         );
+
+        redColorEditText.setText(String.valueOf(rgbArray[0]));
+        greenColorEditText.setText(String.valueOf(rgbArray[1]));
+        blueColorEditText.setText(String.valueOf(rgbArray[2]));
 
         // Update color view
         currentColorView.setBackgroundColor(currentColor);

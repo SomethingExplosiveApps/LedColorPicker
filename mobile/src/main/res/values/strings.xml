@@ -3,4 +3,8 @@
     <string name="current_color_header">Current color (HEX): %1$s</string>
     <string name="pick_new_color_button_text">Pick new color</string>
     <string name="error_sending_color_to_service_text">Error updating color, please retry.</string>
+    <string name="hint_red_color_value_et">Red</string>
+    <string name="hint_green_color_value_et">Green</string>
+    <string name="hint_blue_color_value_et">Blue</string>
+    <string name="update_button_text_bt">Update</string>
 </resources>

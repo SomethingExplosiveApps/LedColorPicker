@@ -35,4 +35,8 @@ public class ColorParser {
             return null;
         }
     }
+
+    public static String rgbToHex(int red, int green, int blue) {
+        return String.format("#%02x%02x%02x", red, green, blue);
+    }
 }
