@@ -6,8 +6,6 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
     }
 
     compileOptions {
@@ -27,6 +25,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:25.1.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    api 'com.squareup.retrofit2:retrofit:2.1.0'
+    api 'com.squareup.retrofit2:converter-gson:2.1.0'
 }
